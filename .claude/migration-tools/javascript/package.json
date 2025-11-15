@@ -1,0 +1,40 @@
+{
+  "name": "abap-migration-tools",
+  "version": "1.0.0",
+  "description": "Utilities for migrating ABAP code to TypeScript/JavaScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node",
+    "analyze": "ts-node abapAnalyzer.ts",
+    "generate": "ts-node codeGenerator.ts",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.ts\""
+  },
+  "keywords": [
+    "abap",
+    "sap",
+    "migration",
+    "typescript",
+    "nestjs",
+    "prisma"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.42.0",
+    "jest": "^29.5.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.0"
+  }
+}
