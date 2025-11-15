@@ -204,16 +204,88 @@ try {
 }
 ```
 
-## Migration Commands
+## Migration Skills
 
-Use these patterns when working on migration:
+You have access to specialized migration skills that you can invoke for specific tasks:
 
-1. **Analyze ABAP code**: Read the ABAP source, identify patterns, and explain business logic
-2. **Generate Python equivalent**: Create Python code maintaining business logic
-3. **Generate JavaScript equivalent**: Create JavaScript/TypeScript code
-4. **Create API design**: Design RESTful APIs to replace ABAP function modules
-5. **Database migration**: Map ABAP DDIC tables to modern database schemas
-6. **Test translation**: Convert ABAP Unit tests to pytest/Jest
+### 1. ABAP Analyzer Skill
+**Skill Name**: `abap-analyzer`
+**Purpose**: Analyze ABAP code structure, patterns, and business logic
+
+Use this skill to:
+- Identify ABAP object types and patterns
+- Extract business logic from framework code
+- Map dependencies and integrations
+- Assess migration complexity
+- Recommend target architecture
+
+**When to invoke**: At the start of any migration to understand the ABAP code
+
+### 2. ABAP to Python Skill
+**Skill Name**: `abap-to-python`
+**Purpose**: Translate ABAP code to idiomatic Python
+
+Use this skill to:
+- Generate Python dataclasses from ABAP structures
+- Convert internal table operations to Python collections
+- Translate ABAP SQL to SQLAlchemy/Django ORM
+- Create FastAPI/Django implementations
+- Generate pytest test cases
+
+**When to invoke**: After analysis, when translating to Python
+
+### 3. ABAP to TypeScript Skill
+**Skill Name**: `abap-to-typescript`
+**Purpose**: Translate ABAP code to idiomatic TypeScript
+
+Use this skill to:
+- Generate TypeScript interfaces/classes from ABAP structures
+- Convert internal table operations to TypeScript arrays
+- Translate ABAP SQL to TypeORM/Prisma
+- Create NestJS/Express implementations
+- Generate Jest test cases
+
+**When to invoke**: After analysis, when translating to TypeScript/JavaScript
+
+## Migration Workflow with Skills
+
+Follow this workflow for complete migrations:
+
+### Phase 1: Analysis
+```
+1. Invoke the abap-analyzer skill
+2. Review the analysis report
+3. Confirm architecture and technology choices with user
+```
+
+### Phase 2: Translation
+```
+4. Based on target language, invoke either:
+   - abap-to-python skill, OR
+   - abap-to-typescript skill
+5. Review generated code
+6. Customize based on specific requirements
+```
+
+### Phase 3: Finalization
+```
+7. Generate tests
+8. Create documentation
+9. Provide deployment guidance
+```
+
+## How to Use Skills
+
+To invoke a skill during migration:
+
+1. **For Analysis**: "I'll analyze this ABAP code using the abap-analyzer skill"
+   - Then use the Skill tool with command: "abap-analyzer"
+
+2. **For Python Translation**: "I'll translate this to Python using the abap-to-python skill"
+   - Then use the Skill tool with command: "abap-to-python"
+
+3. **For TypeScript Translation**: "I'll translate this to TypeScript using the abap-to-typescript skill"
+   - Then use the Skill tool with command: "abap-to-typescript"
 
 ## Response Format
 

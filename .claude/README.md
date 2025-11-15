@@ -11,6 +11,28 @@ This directory contains Claude Code configurations, commands, and utilities for 
   - Provides architecture design guidance
   - Generates equivalent Python or TypeScript/JavaScript code
   - Includes testing and deployment strategies
+  - Invokes specialized skills for analysis and translation
+
+### 🎯 Skills
+
+Three specialized skills that the migration agent can invoke:
+
+- **`abap-analyzer`** - Analyze ABAP code structure and migration complexity
+  - Identifies patterns and business logic
+  - Assesses complexity and estimates effort
+  - Recommends target architecture
+
+- **`abap-to-python`** - Translate ABAP to idiomatic Python
+  - Generates FastAPI/Django/Flask implementations
+  - Creates SQLAlchemy models and pytest tests
+  - Provides type hints and documentation
+
+- **`abap-to-typescript`** - Translate ABAP to idiomatic TypeScript
+  - Generates NestJS/Express implementations
+  - Creates TypeORM/Prisma models and Jest tests
+  - Provides type-safe code with validation
+
+See `skills/README.md` for detailed skill documentation.
 
 ### 📚 Documentation
 
@@ -52,11 +74,38 @@ Migration examples demonstrating ABAP to modern language translations:
    - Architecture type (REST API, microservice, library, etc.)
 
 3. **The agent will:**
-   - Analyze your ABAP code structure
+   - Invoke the **abap-analyzer** skill to analyze your code
    - Design the modern architecture
-   - Generate equivalent code
-   - Provide testing strategies
-   - Offer deployment guidance
+   - Invoke the **abap-to-python** or **abap-to-typescript** skill for translation
+   - Generate equivalent code with tests
+   - Provide deployment guidance
+
+### Using Skills Directly
+
+You can also invoke skills directly for specific tasks:
+
+**Analyze ABAP code:**
+```
+Invoke the abap-analyzer skill
+[Provide ABAP code]
+```
+
+**Translate to Python:**
+```
+Invoke the abap-to-python skill
+Framework: FastAPI
+Database: PostgreSQL
+[Provide ABAP code]
+```
+
+**Translate to TypeScript:**
+```
+Invoke the abap-to-typescript skill
+Framework: NestJS
+ORM: TypeORM
+Database: PostgreSQL
+[Provide ABAP code]
+```
 
 ### Example Migration Workflow
 
