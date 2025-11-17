@@ -434,7 +434,7 @@ export class PermissionGuard implements CanActivate {
 }
 
 // Usage
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 
 @Controller('flights')
 @UseGuards(PermissionGuard)
@@ -847,6 +847,8 @@ export class FlightQueryDto {
     maxRows: number = 100;
 }
 
+import { Controller, Get, Query } from '@nestjs/common';
+
 // Controller usage
 @Controller('flights')
 export class FlightController {
@@ -895,7 +897,8 @@ export class FlightController {
 //   TABLES t_outtab = lt_flights.
 
 // Output: NestJS with pagination
-import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsOptional, IsString, Min, Max } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PageParams {
     @ApiProperty({ default: 1, minimum: 1 })
@@ -934,6 +937,9 @@ export class PagedResponse<T> {
     @ApiProperty({ isArray: true })
     data: T[];
 }
+
+import { Controller, Get, Query, Res } from '@nestjs/common';
+import { Response } from 'express';
 
 @Controller('flights')
 export class FlightController {
@@ -989,7 +995,8 @@ export class FlightController {
 // ENDLOOP.
 
 // Output: Async TypeScript with parallel processing
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, Controller, Get, Query } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class FlightService {
@@ -1029,11 +1036,16 @@ export class FlightService {
         }));
     }
 
-    // Controller usage
+}
+
+@Controller('flights')
+export class FlightController {
+    constructor(private readonly flightService: FlightService) {}
+
     @Get('enriched')
     async getEnrichedFlights(@Query('carrid') carrid?: string) {
-        const flights = await this.getFlights(carrid);
-        const enriched = await this.enrichFlightsParallel(flights);
+        const flights = await this.flightService.getFlights(carrid);
+        const enriched = await this.flightService.enrichFlightsParallel(flights);
         return { count: enriched.length, data: enriched };
     }
 }
@@ -2227,7 +2239,7 @@ import * as redisStore from 'cache-manager-redis-store';
 export class AppModule {}
 
 // Usage in controller
-import { CacheInterceptor, CacheTTL } from '@nestjs/common';
+import { Controller, Get, UseInterceptors, CacheInterceptor, CacheTTL } from '@nestjs/common';
 
 @Controller('flights')
 @UseInterceptors(CacheInterceptor)

@@ -1135,10 +1135,13 @@ async def export_flights_csv(
 
 # Output: Async Python (FastAPI recommended pattern)
 import asyncio
-from typing import List
+from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy import select
+import httpx
 from fastapi import APIRouter, Depends
+
+from app.dependencies import get_async_db  # adjust to your project structure
 
 router = APIRouter()
 
