@@ -90,7 +90,123 @@ Map all dependencies:
 - Number ranges
 ```
 
-### 4. Pattern Classification
+### 4. SAP-Specific Features Translation Guide
+
+Map SAP-specific features to modern equivalents:
+
+**Number Range Objects:**
+```
+ABAP Pattern: NUMBER_GET_NEXT, SNRO
+→ Python: UUID4, database sequences, Redis counters
+→ TypeScript: nanoid, ulid, database auto-increment
+→ Architecture: Distributed ID generation (Snowflake algorithm)
+
+Migration Strategy:
+- Simple cases: Use UUID4/nanoid for globally unique IDs
+- Sequential: Database sequences with proper isolation
+- High-volume: Distributed ID generators (Redis, dedicated service)
+```
+
+**Authorization Objects:**
+```
+ABAP Pattern: AUTHORITY-CHECK OBJECT
+→ Python: Flask-Security, Casbin, role decorators
+→ TypeScript: Passport.js, NestJS Guards, CASL
+→ Architecture: JWT tokens with role-based access control (RBAC)
+
+Migration Strategy:
+- Map authorization objects to permissions/roles
+- Implement middleware/guards for endpoint protection
+- Use JWT for stateless authentication
+- Consider attribute-based access control (ABAC) for complex rules
+```
+
+**Background Jobs:**
+```
+ABAP Pattern: JOB_OPEN, JOB_SUBMIT, SM36
+→ Python: Celery, APScheduler, RQ
+→ TypeScript: Bull, BullMQ, Agenda
+→ Architecture: Message queue-based task processing
+
+Migration Strategy:
+- Scheduled jobs → Cron expressions with task scheduler
+- Async processing → Task queue with workers
+- Job monitoring → Queue dashboard (Flower for Celery, Bull Board)
+- Job dependencies → Task chains and workflows
+```
+
+**Lock Objects:**
+```
+ABAP Pattern: ENQUEUE_*, DEQUEUE_*
+→ Python: Redis locks (redis-py), database locks (SQLAlchemy)
+→ TypeScript: Redlock, ioredis, TypeORM pessimistic locks
+→ Architecture: Distributed locking for concurrent access control
+
+Migration Strategy:
+- Single server: Database row-level locks
+- Distributed: Redis with Redlock algorithm
+- Consider lock timeout and deadlock prevention
+- Implement lock acquisition retry logic
+```
+
+**Message Classes:**
+```
+ABAP Pattern: MESSAGE ID, T100 table
+→ Python: gettext, babel, Python i18n
+→ TypeScript: i18next, format.js, react-intl
+→ Architecture: Internationalization (i18n) and localization (l10n)
+
+Migration Strategy:
+- Extract message texts to JSON/PO files
+- Organize by message class/type
+- Support multiple languages
+- Include message placeholders and formatting
+```
+
+**Screen/Dynpro Logic:**
+```
+ABAP Pattern: SCREEN, DYNPRO, MODULE POOL
+→ Python: Frontend frameworks (React, Vue, Angular) + FastAPI backend
+→ TypeScript: React/Vue/Angular with validation
+→ Architecture: Decoupled frontend with REST/GraphQL API
+
+Migration Strategy:
+- Extract business logic from presentation layer
+- Convert screen fields to form models/DTOs
+- Implement validation on both client and server
+- Use modern UI components for enhanced UX
+```
+
+**Selection Screens:**
+```
+ABAP Pattern: PARAMETERS, SELECT-OPTIONS
+→ Python: Pydantic query models, FastAPI Query parameters
+→ TypeScript: Query DTOs with class-validator
+→ Architecture: Query parameter filtering and pagination
+
+Migration Strategy:
+- PARAMETERS → Simple query parameters
+- SELECT-OPTIONS → Range filters (from/to, in list)
+- Multiple selection → Array query parameters
+- Default values → Query parameter defaults
+```
+
+**ALV Grids:**
+```
+ABAP Pattern: CL_GUI_ALV_GRID, REUSE_ALV_*
+→ Python: Pandas DataFrames with FastAPI pagination
+→ TypeScript: AG Grid, DataTables, TanStack Table
+→ Architecture: API-driven data tables with server-side operations
+
+Migration Strategy:
+- Grid display → Frontend data table component
+- Column configuration → Table column definitions
+- Sorting/filtering → Backend query parameters
+- Pagination → Limit/offset or cursor-based
+- Export → CSV/Excel generation endpoints
+```
+
+### 5. Pattern Classification
 
 Identify ABAP patterns used (reference cheat sheets 01-34):
 
@@ -124,33 +240,80 @@ Identify ABAP patterns used (reference cheat sheets 01-34):
 - Exception handling (27)
 - Authorization checks (25)
 
-### 5. Complexity Assessment
+### 6. Complexity Assessment
 
-Rate migration complexity:
+Rate migration complexity with enhanced criteria:
 
-**Low Complexity:**
+**Low Complexity (1-3 days):**
 - Pure data transformations
 - Simple CRUD operations
 - Stateless logic
 - No SAP-specific dependencies
 - Clear business rules
+- Simple calculations
+- Basic internal table operations
+- No external integrations
 
-**Medium Complexity:**
+**Medium Complexity (4-7 days):**
 - Multiple database operations
 - Transaction management
 - Some SAP standard object usage
-- Authorization checks
+- Authorization checks (simple roles)
 - Moderate business logic
+- Internal tables with grouping/aggregations
+- Number range usage
+- Lock objects for concurrency
+- Message class usage
+- Selection screen logic
+- Background job scheduling (simple)
 
-**High Complexity:**
+**High Complexity (8-15 days):**
 - Complex RAP business objects
 - Heavy use of BAPIs/RFCs
 - Custom workflows
-- Advanced authorization
+- Advanced authorization (multiple objects, complex conditions)
 - Update/enqueue patterns
 - AMDP with database-specific code
+- Dynpro with complex flow logic
+- ALV with custom events and handlers
+- Complex background job chains
+- Integration with multiple external systems
+- Real-time data synchronization
 
-### 6. Architecture Recommendations
+**Very High Complexity (15+ days):**
+- Legacy ABAP with extensive custom framework dependencies
+- Complex workflow engine integrations
+- Heavy customization of SAP standard objects
+- Performance-critical batch processing
+- Complex lock coordination across systems
+- Multi-system data orchestration
+- Custom authorization frameworks
+- Legacy update/enqueue patterns requiring redesign
+
+**Complexity Factors Scoring:**
+
+Score each factor (0-3 points), sum for total complexity score:
+
+| Factor | 0 pts (None) | 1 pt (Low) | 2 pts (Medium) | 3 pts (High) |
+|--------|--------------|------------|----------------|--------------|
+| Database Operations | No DB access | Simple SELECT | Multiple tables/joins | Complex AMDP/hierarchies |
+| Business Logic | Simple calculations | Linear logic | Conditional logic | State machine/workflow |
+| SAP Dependencies | None | Standard types | BAPIs/FMs | Custom frameworks |
+| Authorization | None | Single check | Multiple objects | Complex conditions |
+| Concurrency | Stateless | Read-only | Lock objects | Distributed locks |
+| Number Ranges | None | Single range | Multiple ranges | Custom range logic |
+| Background Processing | None | Simple schedule | Job chains | Complex orchestration |
+| UI Components | None | Basic output | Selection screens | Dynpro/ALV |
+| External Integration | None | Single RFC | Multiple BAPIs | Complex choreography |
+| Data Volume | Small (<1K) | Medium (<100K) | Large (<1M) | Very large (>1M) |
+
+**Total Score Interpretation:**
+- 0-8 points: Low Complexity
+- 9-16 points: Medium Complexity
+- 17-24 points: High Complexity
+- 25-30 points: Very High Complexity
+
+### 7. Architecture Recommendations
 
 Based on analysis, recommend:
 
@@ -256,6 +419,16 @@ Based on analysis, recommend:
 - [x] Calculations
 - [ ] Workflow/state machine
 - [ ] Authorization checks
+
+### SAP-Specific Features:
+- [ ] Number ranges (SNRO, NUMBER_GET_NEXT)
+- [ ] Authorization objects (AUTHORITY-CHECK)
+- [ ] Background jobs (JOB_OPEN, JOB_SUBMIT)
+- [ ] Lock objects (ENQUEUE_*, DEQUEUE_*)
+- [ ] Message classes (MESSAGE ID)
+- [ ] Dynpro/Screens (MODULE POOL)
+- [ ] Selection screens (PARAMETERS, SELECT-OPTIONS)
+- [ ] ALV grids (CL_GUI_ALV_GRID)
 
 ## 6. Complexity Assessment
 
