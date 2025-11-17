@@ -1829,9 +1829,13 @@ def setup_logging(log_level: str = "INFO"):
 ### Health Checks
 
 ```python
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy import text
+from sqlalchemy.orm import Session
+import logging
 import redis
+
+from app.dependencies import get_db, get_redis  # adjust import to your project structure
 
 router = APIRouter()
 

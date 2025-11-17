@@ -2227,7 +2227,7 @@ import * as redisStore from 'cache-manager-redis-store';
 export class AppModule {}
 
 // Usage in controller
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheTTL } from '@nestjs/common';
 
 @Controller('flights')
 @UseInterceptors(CacheInterceptor)
